@@ -1,0 +1,91 @@
+    Таблица roles
+-Создание новой роли
+Insert into roles(name) values ('some_name')
+-Получение всех ролей
+Select * from roles
+-Получение информации о конкретной роли
+select * from roles where name = 'some_name'
+-Обновление информации о роли
+Update roles set name = 'new_some_name' WHERE name = 'some_name';
+-Удаление роли
+delete from roles where name = 'some_name'
+    Таблица users
+-Создание нового пользователя
+insert into users(username,password,email) values('some_username','some_password','some_email');
+-Получение всех пользователей
+Select * from users
+-Получение информации о конкретном пользователе
+select * from users where username='some_name' or email='some_email'
+-Обновление информации о пользователе
+update users set username = 'new_some_username',email = 'new_some_email' where username='some_username' and email='some_email'
+-Удаление пользователя
+delete from users where username='some_username' or email='some_email'
+    Таблица user_roles
+-Назначение роли пользователю
+insert into user_roles (user_id,role_id)
+values (
+(select id from users where username ='some_username'),
+(select id from roles where name = 'some_name'))
+-Удаление роли у пользователя
+delete from user_roles where
+user_id = (select id from users where username ='some_username') and
+role_id = (select id from roles where name = 'some_name');
+-Получение всех ролей, назначенных конкретному пользователю
+select name from roles
+join user_roles ON roles.id = user_roles.role_id
+join users ON user_roles.user_id = users.id
+where u.username = 'some_username'
+-Получение всех пользователей с определенной ролью
+select username from users
+join user_roles ON users.id = user_roles.user_id
+join roles ON roles.id = user_roles.role_id
+where roles.name = 'some_name'
+    Таблица task_statuses
+-Создание нового статуса задачи
+insert into task_statuses (name) values ('some_status');
+-Получение всех статусов задач
+select * from task_statuses;
+-Получение информации о конкретном статусе задачи
+select * from task_statuses where name = 'some_status'
+-Обновление информации о статусе задачи
+update task_statuses set name = 'new_some_status' where name = 'some_status'
+-Удаление статуса задачи
+delete from task_statuses where name = 'some_status'
+    Таблица tasks
+-Создание новой задачи
+insert into tasks (title,description,status) values ('some_title','some_description',(
+select id from task_statuses where name = 'some_status'))
+-Получение всех задач
+select * from tasks
+-Получение информации о конкретной задаче
+SELECT * FROM tasks WHERE id = 'some_task_id';
+-Обновление информации о задаче
+UPDATE tasks
+SET title = 'new_title', description = 'new_description', status = (
+    SELECT id FROM task_statuses WHERE name = 'new_status'
+)
+WHERE id = 'some_task_id';
+-Удаление задачи
+DELETE FROM tasks WHERE id = 'some_task_id';
+-Получение всех задач с определенным статусом
+select * from tasks where status = (select id from task_statuses where name = 'some_status')
+-Получение всех задач, назначенных конкретному пользователю
+select title,status from tasks
+join task_statuses ON tasks.id = task_statuses.id
+join users ON task_assignees.user_id = users.id
+where users.username = 'some_username'
+    Таблица task_assignees
+-Назначение задачи пользователю
+Insert into task_assignees (task_id,user_id) values('some_task_id',
+(select id from users where username = 'some_username'))
+-Удаление назначения задачи пользователю
+delete from task_assignees where task_id = 'some_task_id' and user_id =
+( select id from users where username = 'some_username')
+-Получение всех пользователей, назначенных на конкретную задачу
+select * from users
+join task_assignees ta ON ta.user_id = users.id
+where users.id = 'some_task_id'
+-Получение всех задач, на которые назначен конкретный пользователь
+select title,status from tasks
+join task_statuses ON tasks.id = task_statuses.id
+where users.username = (SELECT id FROM users WHERE username = 'some_username');
