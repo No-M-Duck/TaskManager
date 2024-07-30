@@ -11,6 +11,7 @@ import m_duck.taskmanager.model.tables.pojos.Roles;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class RoleService {
@@ -24,9 +25,9 @@ public class RoleService {
      }
 
      public void addNewRole(Roles role) throws  RoleException {
-          boolean isAdded = jooqRoleRepo.saveRole(role);
+          boolean isAdded = jooqRoleRepo.saveRole(role.setName(role.getName().toUpperCase()));
           if(!isAdded){
-              throw  new RoleException("Role is not added");
+              throw  new RoleException("Role is not added.It is possible that a role with this name already exists.");
           }
 
      }
@@ -43,18 +44,18 @@ public class RoleService {
           );
      }
 
-     public void updateRole(Roles role) throws RoleException{
-          boolean isUpdate = jooqRoleRepo.updateRole(role);
+     public void updateRole(UUID id,Roles role) throws RoleException{
+          boolean isUpdate = jooqRoleRepo.updateRole(id,role);
           if(!isUpdate){
-               throw  new RoleException("Role is not updated");
+               throw  new RoleException("Role is not updated.It is possible that a role with this name already exists.");
           }
 
      }
 
-     public void deleteRole(Roles role)throws RoleException{
-         boolean isDelete = jooqRoleRepo.deleteRole(role);
+     public void deleteRole(UUID id)throws RoleException{
+         boolean isDelete = jooqRoleRepo.deleteRole(id);
          if(!isDelete){
-              throw new RoleException("Role is not deleted");
+              throw new RoleException("Role is not deleted. Check id of role");
          }
 
      }

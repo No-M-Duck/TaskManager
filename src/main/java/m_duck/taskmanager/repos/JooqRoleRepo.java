@@ -1,5 +1,6 @@
 package m_duck.taskmanager.repos;
 
+import m_duck.taskmanager.exception.RoleException;
 import m_duck.taskmanager.model.Tables;
 import m_duck.taskmanager.model.tables.pojos.Roles;
 import org.jooq.DSLContext;
@@ -7,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.UUID;
 
 @Repository
 public class JooqRoleRepo implements RoleRepo{
@@ -20,7 +22,11 @@ public class JooqRoleRepo implements RoleRepo{
 
     @Override
     public boolean saveRole(Roles role) {
-       return dslContext.insertInto(Tables.ROLES).set(dslContext.newRecord(Tables.ROLES,role)).execute()==1;
+       return dslContext.insertInto(Tables.ROLES).set(dslContext.newRecord(Tables.ROLES,role)).onDuplicateKeyIgnore().execute()==1;
+    }
+
+    private boolean checkRole(UUID id){
+        return dslContext.selectFrom(Tables.ROLES).where(Tables.ROLES.ID.eq(id)).execute()>0;
     }
 
     @Override
@@ -31,20 +37,26 @@ public class JooqRoleRepo implements RoleRepo{
     @Override
     public Roles getRoleByName(String roleName) {
         return dslContext.selectFrom(Tables.ROLES)
-                .where(Tables.ROLES.NAME.eq(roleName))
+                .where(Tables.ROLES.NAME.eq(roleName.toUpperCase()))
                 .fetchOneInto(Roles.class);
     }
 
     @Override
-    public boolean updateRole(Roles role) {
-         return dslContext.update(Tables.ROLES)
-                .set(Tables.ROLES.NAME,role.getName())
-                .where(Tables.ROLES.ID.eq(role.getId()))
+    public boolean updateRole(UUID id, Roles role) {
+        if(!checkRole(id)){
+           return false;
+        }
+        if(getRoleByName(role.getName())!=null){
+            return false;
+        }
+        return dslContext.update(Tables.ROLES)
+                .set(Tables.ROLES.NAME,role.getName().toUpperCase())
+                .where(Tables.ROLES.ID.eq(id))
                 .execute()==1;
     }
 
     @Override
-    public boolean deleteRole(Roles role) {
-        return dslContext.delete(Tables.ROLES).where(Tables.ROLES.NAME.eq(role.getName())).execute()==1;
+    public boolean deleteRole(UUID id) {
+        return dslContext.delete(Tables.ROLES).where(Tables.ROLES.ID.eq(id)).execute()==1;
     }
 }
