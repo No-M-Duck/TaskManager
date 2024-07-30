@@ -55,26 +55,3 @@ CREATE INDEX idx_user_roles_role_id ON user_roles(role_id);
 CREATE INDEX idx_tasks_status ON tasks(status);
 CREATE INDEX idx_task_assignees_task_id ON task_assignees(task_id);
 CREATE INDEX idx_task_assignees_user_id ON task_assignees(user_id);
-
--- Создание триггера для обновления `updated_at` поля в таблицах `users` и `tasks`
-
--- Функция для обновления `updated_at`
-CREATE OR REPLACE FUNCTION update_timestamp()
-RETURNS TRIGGER AS $$
-BEGIN
-    NEW.updated_at = CURRENT_TIMESTAMP;
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
--- Триггер для таблицы `users`
-CREATE TRIGGER trg_update_users_updated_at
-BEFORE UPDATE ON users
-FOR EACH ROW
-EXECUTE FUNCTION update_timestamp();
-
--- Триггер для таблицы `tasks`
-CREATE TRIGGER trg_update_tasks_updated_at
-BEFORE UPDATE ON tasks
-FOR EACH ROW
-EXECUTE FUNCTION update_timestamp();
