@@ -37,14 +37,14 @@ public class TaskRestCtrl {
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping
-    public ResponseEntity<Void> updateTask(Tasks task) throws TaskException{
-        taskService.updateTask(task);
+    @PutMapping("/{id}")
+    public ResponseEntity<Void> updateTask(@PathVariable UUID id, @RequestBody Tasks task) throws TaskException{
+        taskService.updateTask(id,task);
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping
-    public ResponseEntity<Void> deleteTask(UUID id) throws TaskException{
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteTask(@PathVariable UUID id) throws TaskException{
         taskService.deleteTask(id);
         return ResponseEntity.noContent().build();
     }

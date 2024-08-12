@@ -41,8 +41,8 @@ public class TaskService {
         }
     }
 
-    public void updateTask(Tasks task) throws TaskException{
-        boolean isUpdate = taskRepo.updateTask(task.getId(),task);
+    public void updateTask(UUID id,Tasks task) throws TaskException{
+        boolean isUpdate = taskRepo.updateTask(id,task);
         if(!isUpdate){
             throw new TaskException("Task is not updated with id:" + task.getId());
         }
