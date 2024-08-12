@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/status")
@@ -24,8 +25,8 @@ public class StatusRestCtrl {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TaskStatuses> getStatusById(@RequestBody TaskStatuses status) throws StatusException{
-        TaskStatuses reqStatus = statusService.getStatusByName(status);
+    public ResponseEntity<TaskStatuses> getStatusById(@PathVariable UUID id) throws StatusException{
+        TaskStatuses reqStatus = statusService.getStatusById(id);
         return new ResponseEntity<>(reqStatus,HttpStatus.OK);
     }
 
@@ -35,15 +36,15 @@ public class StatusRestCtrl {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @PutMapping
-    public ResponseEntity<Void> updateStatus(@RequestBody TaskStatuses status) throws StatusException{
-        statusService.updateStatus(status);
+    @PutMapping("/{id}")
+    public ResponseEntity<Void> updateStatus(@PathVariable UUID id,@RequestBody TaskStatuses status) throws StatusException{
+        statusService.updateStatus(id,status);
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping
-    public ResponseEntity<Void> deleteStatus(@RequestBody TaskStatuses status) throws  StatusException{
-        statusService.deleteStatus(status);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteStatus(@PathVariable UUID id) throws  StatusException{
+        statusService.deleteStatus(id);
         return ResponseEntity.noContent().build();
     }
 }

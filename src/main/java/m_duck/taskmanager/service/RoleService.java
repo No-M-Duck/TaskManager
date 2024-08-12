@@ -43,6 +43,11 @@ public class RoleService {
                   ()-> new RoleException("Role not found")
           );
      }
+    public Roles getRoleById(UUID id) throws RoleException{
+        return Optional.ofNullable(jooqRoleRepo.getRoleById(id)).orElseThrow(
+                ()-> new RoleException("Role not found")
+        );
+    }
 
      public void updateRole(UUID id,Roles role) throws RoleException{
           boolean isUpdate = jooqRoleRepo.updateRole(id,role);

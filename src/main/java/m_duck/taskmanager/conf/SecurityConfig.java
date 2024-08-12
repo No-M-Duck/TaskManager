@@ -1,4 +1,4 @@
-package m_duck.taskmanager;
+package m_duck.taskmanager.conf;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

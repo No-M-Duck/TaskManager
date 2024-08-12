@@ -12,7 +12,8 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/tasks")
+@RequestMapping("/api/tasks")
+@CrossOrigin
 public class TaskRestCtrl {
 
     @Autowired

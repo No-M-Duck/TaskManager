@@ -42,6 +42,13 @@ public class JooqRoleRepo implements RoleRepo{
     }
 
     @Override
+    public Roles getRoleById(UUID id) {
+        return dslContext.selectFrom(Tables.ROLES)
+                .where(Tables.ROLES.ID.eq(id))
+                .fetchOneInto(Roles.class);
+    }
+
+    @Override
     public boolean updateRole(UUID id, Roles role) {
         if(!checkRole(id)){
            return false;

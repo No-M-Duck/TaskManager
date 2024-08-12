@@ -13,7 +13,9 @@ public interface StatusRepo {
 
     TaskStatuses getStatusByName(String name);
 
-    boolean updateStatus(TaskStatuses status);
+    TaskStatuses getStatusById(UUID id);
 
-    boolean deleteStatus(TaskStatuses status);
+    boolean updateStatus(UUID id,TaskStatuses status);
+
+    boolean deleteStatus(UUID id);
 }

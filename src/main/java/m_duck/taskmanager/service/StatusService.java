@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class StatusService {
@@ -41,16 +42,23 @@ public class StatusService {
                 );
 
     }
+    public TaskStatuses getStatusById(UUID id) throws StatusException{
+        return Optional.ofNullable(statusRepo.getStatusById(id))
+                .orElseThrow(
+                        ()-> new StatusException("Current status not found")
+                );
 
-    public void updateStatus(TaskStatuses status) throws StatusException {
-        boolean isUpdate = statusRepo.createStatus(status);
+    }
+
+    public void updateStatus(UUID id,TaskStatuses status) throws StatusException {
+        boolean isUpdate = statusRepo.updateStatus(id,status);
         if(!isUpdate){
             throw new StatusException("Status is not updated");
         }
     }
 
-    public void deleteStatus(TaskStatuses status) throws StatusException {
-        boolean isDeleted = statusRepo.createStatus(status);
+    public void deleteStatus(UUID id) throws StatusException {
+        boolean isDeleted = statusRepo.deleteStatus(id);
         if(!isDeleted){
             throw new StatusException("Status is not deleted");
         }

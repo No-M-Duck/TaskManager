@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.UUID;
+
 @Repository
 public class JooqStatusRepo implements StatusRepo{
 
@@ -18,6 +20,7 @@ public class JooqStatusRepo implements StatusRepo{
     }
     @Override
     public boolean createStatus(TaskStatuses status) {
+        status.setName(status.getName().toUpperCase());
         return dslContext.insertInto(Tables.TASK_STATUSES)
                 .set(dslContext.newRecord(Tables.TASK_STATUSES,status))
                 .onDuplicateKeyIgnore()
@@ -37,17 +40,25 @@ public class JooqStatusRepo implements StatusRepo{
     }
 
     @Override
-    public boolean updateStatus(TaskStatuses status) {
+    public TaskStatuses getStatusById(UUID id) {
+        return dslContext.selectFrom(Tables.TASK_STATUSES)
+                .where(Tables.TASK_STATUSES.ID.eq(id))
+                .fetchOneInto(TaskStatuses.class);
+    }
+
+    @Override
+    public boolean updateStatus(UUID id,TaskStatuses status) {
+        status.setName(status.getName().toUpperCase());
         return dslContext.update(Tables.TASK_STATUSES)
                 .set(Tables.TASK_STATUSES.NAME,status.getName())
-                .where(Tables.TASK_STATUSES.ID.eq(status.getId()))
+                .where(Tables.TASK_STATUSES.ID.eq(id))
                 .execute()==1;
     }
 
     @Override
-    public boolean deleteStatus(TaskStatuses status) {
+    public boolean deleteStatus(UUID id) {
         return dslContext.delete(Tables.TASK_STATUSES)
-                .where(Tables.TASK_STATUSES.ID.eq(status.getId()))
+                .where(Tables.TASK_STATUSES.ID.eq(id))
                 .execute()==1;
     }
 }
