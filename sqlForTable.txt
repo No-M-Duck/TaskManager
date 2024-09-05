@@ -82,10 +82,12 @@ Insert into task_assignees (task_id,user_id) values('some_task_id',
 delete from task_assignees where task_id = 'some_task_id' and user_id =
 ( select id from users where username = 'some_username')
 -Получение всех пользователей, назначенных на конкретную задачу
-select * from users
-join task_assignees ta ON ta.user_id = users.id
-where users.id = 'some_task_id'
+SELECT users.*
+FROM users
+JOIN task_assignees ta ON ta.user_id = users.id
+WHERE ta.task_id = 'some_task_id'
 -Получение всех задач, на которые назначен конкретный пользователь
-select title,status from tasks
-join task_statuses ON tasks.id = task_statuses.id
-where users.username = (SELECT id FROM users WHERE username = 'some_username');
+SELECT tasks.title, tasks.status
+FROM tasks
+JOIN task_assignees ta ON tasks.id = ta.task_id
+WHERE ta.user_id = (SELECT id FROM users WHERE username = 'some_username');

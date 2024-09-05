@@ -6,6 +6,7 @@ import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -21,6 +22,9 @@ public class JooqUserRepo implements UserRepo{
 
     @Override
     public boolean saveUser(Users user) {
+        LocalDateTime localDateTime = LocalDateTime.now();
+        user.setCreatedAt(localDateTime);
+        user.setUpdatedAt(localDateTime);
         return dslContext.insertInto(Tables.USERS).set(dslContext.newRecord(Tables.USERS,user)).onDuplicateKeyIgnore().execute()==1;
     }
 
@@ -30,16 +34,30 @@ public class JooqUserRepo implements UserRepo{
     }
 
     @Override
-    public Users getUserByUserNameOrEmail(Users user) {
+    public Users getUserByUserNameOrEmail(String value) {
         return dslContext.selectFrom(Tables.USERS)
-                .where(Tables.USERS.USERNAME.eq(user.getUsername()))
-                .or(Tables.USERS.EMAIL.eq(user.getEmail()))
+                .where(Tables.USERS.USERNAME.eq(value))
+                .or(Tables.USERS.EMAIL.eq(value))
                 .fetchOneInto(Users.class);
+    }
+
+    @Override
+    public Users getUserById(UUID id) {
+        return dslContext.selectFrom(Tables.USERS)
+                .where(Tables.USERS.ID.eq(id)).fetchOneInto(Users.class);
     }
 
     private boolean checkUser(UUID uuid){
         return dslContext.selectFrom(Tables.USERS)
                 .where(Tables.USERS.ID.eq(uuid)).execute()>0;
+    }
+    public boolean checkUser(String username){
+        return dslContext.selectFrom(Tables.USERS)
+                .where(Tables.USERS.USERNAME.eq(username)).execute()<1;
+    }
+    public boolean checkEmail(String email){
+        return dslContext.selectFrom(Tables.USERS)
+                .where(Tables.USERS.EMAIL.eq(email)).execute()<1;
     }
 
     @Override
@@ -47,6 +65,8 @@ public class JooqUserRepo implements UserRepo{
         if(!checkUser(id)){
             return false;
         }
+        LocalDateTime localDateTime = LocalDateTime.now();
+        user.setUpdatedAt(localDateTime);
         return dslContext.update(Tables.USERS)
                 .set(dslContext.newRecord(Tables.USERS,user))
                 .where(Tables.USERS.ID.eq(id)).execute()==1;

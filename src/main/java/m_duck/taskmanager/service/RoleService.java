@@ -25,7 +25,7 @@ public class RoleService {
      }
 
      public void addNewRole(Roles role) throws  RoleException {
-          boolean isAdded = jooqRoleRepo.saveRole(role.setName(role.getName().toUpperCase()));
+          boolean isAdded = jooqRoleRepo.saveRole(role.setName("ROLE_"+role.getName().toUpperCase()));
           if(!isAdded){
               throw  new RoleException("Role is not added.It is possible that a role with this name already exists.");
           }

@@ -31,13 +31,13 @@ public class UserRoleRestCtrl {
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
-    @PostMapping("/by-user")
+    @PostMapping
     public ResponseEntity<Void> addRole
             (@RequestBody RoleAssignmentRequest request) throws UserRoleException{
         userRoleService.addRoleForUser(request.getRole(),request.getUser()) ;
         return ResponseEntity.noContent().build();
     }
-    @DeleteMapping("/by-user")
+    @DeleteMapping
     public ResponseEntity<Void> deleteRole
             (@RequestBody RoleAssignmentRequest request) throws UserRoleException{
         userRoleService.addRoleForUser(request.getRole(),request.getUser());

@@ -21,7 +21,7 @@ public class UserRoleService {
     }
 
     public void addRoleForUser(Roles role, Users user) throws UserRoleException {
-        boolean isAdded = userRolesRepo.addOrUpdateRoleForUser(user.getId(), role.getId());
+        boolean isAdded = userRolesRepo.addOrUpdateRoleForUser(user.getUsername(), role.getName());
         if (!isAdded) {
             throw new UserRoleException("Unable to add or update role to current user");
         }

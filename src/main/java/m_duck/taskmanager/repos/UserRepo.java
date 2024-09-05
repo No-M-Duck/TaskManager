@@ -11,7 +11,9 @@ public interface UserRepo {
 
     List<Users> getAllUsers();
 
-    Users getUserByUserNameOrEmail(Users user);
+    Users getUserByUserNameOrEmail(String value);
+
+    Users getUserById(UUID id);
 
     boolean updateUser(UUID id, Users user);
 

@@ -1,5 +1,6 @@
 package m_duck.taskmanager.repos;
 
+import m_duck.taskmanager.DTO.TaskView;
 import m_duck.taskmanager.model.tables.pojos.Tasks;
 import m_duck.taskmanager.model.tables.pojos.Users;
 
@@ -8,11 +9,13 @@ import java.util.UUID;
 
 public interface TaskAssigneesRepo {
 
-    boolean addOrUpdateTaskByUser(UUID taskId, UUID userId);
+    boolean addOrUpdateTaskByUser(UUID taskId, String username);
 
     boolean deleteTaskByUser(UUID taskId, UUID userId);
 
-    List<Users> getUsersByTask(UUID taskId);
+    List<TaskView> getUsersByTask(UUID taskId);
 
     List<Tasks> getTasksByUser(UUID userId);
+
+    boolean deleteUserByTask(UUID task_id,String username);
 }

@@ -24,10 +24,22 @@ public class UserRestCtrl {
         List<Users> users = userService.getUsers();
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
+    @GetMapping("/check-username")
+    public ResponseEntity<Boolean> checkUsername(@RequestParam String username) {
+        System.out.println(username);
+        boolean exists = userService.checkUsername(username);
+        return ResponseEntity.ok(exists);
+    }
+    @GetMapping("/check-email")
+    public ResponseEntity<Boolean> checkEmail(@RequestParam String email) {
+        System.out.println(email);
+        boolean exists = userService.checkEmail( email);
+        return ResponseEntity.ok(exists);
+    }
 
-    @GetMapping("/user/{id}")
-    public ResponseEntity<Users> getUser(@RequestBody Users user) throws UserException {
-        Users retUser = userService.getUserByUsernameOrEmail(user);
+    @GetMapping("/{id}")
+    public ResponseEntity<Users> getUser(@PathVariable UUID id) throws UserException {
+        Users retUser = userService.getUserById(id);
         return new ResponseEntity<>(retUser, HttpStatus.OK);
     }
 

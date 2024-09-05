@@ -2,35 +2,43 @@ package m_duck.taskmanager.repos;
 
 import m_duck.taskmanager.model.Tables;
 import m_duck.taskmanager.model.tables.pojos.Roles;
-import m_duck.taskmanager.model.tables.pojos.UserRoles;
 import m_duck.taskmanager.model.tables.pojos.Users;
 import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.bind.annotation.RequestBody;
+
 
 import java.util.List;
 import java.util.UUID;
 
 @Repository
-public class JooqUserRolesRepo implements UserRolesRepo{
+public class JooqUserRolesRepo implements UserRolesRepo {
 
     private final DSLContext dslContext;
 
     @Autowired
-    public JooqUserRolesRepo(DSLContext dslContext){
-        this.dslContext=dslContext;
+    public JooqUserRolesRepo(DSLContext dslContext) {
+        this.dslContext = dslContext;
     }
 
     @Override
-    public boolean addOrUpdateRoleForUser(UUID user_id, UUID role_id) {
-        return dslContext.insertInto(Tables.USER_ROLES)
-                .set(Tables.USER_ROLES.ROLE_ID,role_id)
-                .set(Tables.USER_ROLES.USER_ID,user_id)
-                .onConflict(Tables.USER_ROLES.USER_ID,Tables.USER_ROLES.ROLE_ID)
+    public boolean addOrUpdateRoleForUser(String username, String role) {
+        return dslContext
+                .insertInto(Tables.USER_ROLES)
+                .set(Tables.USER_ROLES.ROLE_ID,
+                        dslContext.select(Tables.ROLES.ID)
+                                .from(Tables.ROLES)
+                                .where(Tables.ROLES.NAME.eq(role)))
+                .set(Tables.USER_ROLES.USER_ID,
+                        dslContext.select(Tables.USERS.ID).from(Tables.USERS)
+                                .where(Tables.USERS.USERNAME.eq(username)))
+                .onConflict(Tables.USER_ROLES.USER_ID, Tables.USER_ROLES.ROLE_ID)
                 .doUpdate()
-                .set(Tables.USER_ROLES.ROLE_ID,role_id)
-                .execute()==1;
+                .set(Tables.USER_ROLES.ROLE_ID,
+                        dslContext.select(Tables.ROLES.ID)
+                        .from(Tables.ROLES)
+                        .where(Tables.ROLES.NAME.eq(role)))
+                .execute() == 1;
     }
 
     @Override
@@ -38,7 +46,7 @@ public class JooqUserRolesRepo implements UserRolesRepo{
         return dslContext.delete(Tables.USER_ROLES)
                 .where(Tables.USER_ROLES.ROLE_ID.eq(role_id))
                 .and(Tables.USER_ROLES.USER_ID.eq(user_id))
-                .execute()==1;
+                .execute() == 1;
     }
 
     @Override

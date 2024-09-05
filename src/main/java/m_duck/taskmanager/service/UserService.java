@@ -36,7 +36,7 @@ public class UserService {
         return users;
     }
 
-    public Users getUserByUsernameOrEmail(Users user) throws UserException{
+    public Users getUserByUsernameOrEmail(String user) throws UserException{
         return Optional.ofNullable(userRepo.getUserByUserNameOrEmail(user))
                 .orElseThrow(
                         ()-> new UserException("User not found")
@@ -54,6 +54,20 @@ public class UserService {
         if(!isDeleted) throw new UserException("User is not deleted");
     }
 
+    public Users getUserById(UUID id) throws UserException{
+        return Optional.ofNullable(userRepo.getUserById(id))
+                .orElseThrow(
+                        ()-> new UserException("User not found")
+                );
+
+    }
+
+    public boolean checkUsername(String username){
+        return userRepo.checkUser(username);
+    }
+    public boolean checkEmail(String email){
+        return userRepo.checkEmail(email);
+    }
 
 
 }

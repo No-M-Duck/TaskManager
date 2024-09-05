@@ -8,7 +8,7 @@ import java.util.UUID;
 
 public interface UserRolesRepo {
 
-    boolean addOrUpdateRoleForUser(UUID user_id, UUID role_id);
+    boolean addOrUpdateRoleForUser(String username, String role);
     boolean deleteRoleForUser(UUID user_id, UUID role_id);
     List<Roles> allRolesOfUser(String username);
     List<Users> allUsersOfRoles(String roleName);
